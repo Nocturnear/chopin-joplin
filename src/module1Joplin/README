@@ -1,0 +1,27 @@
+Pseudocode:
+
+static ArrayList<HarmonyPattern> candidates;
+static ArrayList<HarmonyPattern> beginnings;
+static ArrayList<HarmonyPattern> ends;
+
+class Harmony{
+	Part music;
+	Point timeSignature;
+	int keySignature;
+	double tempo;
+	double endTime;
+}
+
+class HarmonyPattern{
+	CPhrase music;
+}
+
+void analyzeMIDI(joplin.mid){
+	This function takes in a music file as an input, scrapes the file for 2-measure HarmonyPatterns, 
+	and adds them to the list of candidates.
+}
+
+Harmony generateHarmony(){
+	This function will generate a Harmony object, which contains the left hand musical data, by stringing
+	together multiple HarmonyPatterns from the candidates list.
+}

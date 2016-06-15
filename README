@@ -6,18 +6,18 @@ Module 1: Joplin Harmonies
 	+ Generate some number of harmonies for the composition
 		
 Module 2: Chopin Melodies	
-- Create naïve Bayes classifier for Chopin melodies
+- Create naive Bayes classifier for Chopin melodies
 	+ Create frequency distribution of features for each composition in the Chopin corpus to use as attributes
-		• A feature is two measures long
+		- A feature is two measures long
 	+ Attributes: 
-		• Highest note
-		• Lowest note
-		• Starting note
-		• Ending note
-		• # of notes
-		• Ascending/descending
-		• Most numerous interval between notes
-		• Least numerous interval between notes
+		- Highest note
+		- Lowest note
+		- Starting note
+		- Ending note
+		- # of notes
+		- Ascending/descending
+		- Most numerous interval between notes
+		- Least numerous interval between notes
 - Create recombinant generative model of Chopin melodies that passes classifier
 	+ Take [duration, key signature, time signature, tempo] as input from previous module
 	+ Generate melodies that gets validated by the classifier
