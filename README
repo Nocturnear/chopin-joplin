@@ -1,0 +1,26 @@
+Module 1: Joplin Harmonies
+- Create recombinant generative model for Joplin harmonies
+	+ Include logic to recognize beginning/end patterns to bookend harmonies
+	+ Recognize harmony pattern candidates by looking for repetitions in pieces
+	+ Decide on [duration, key signature, time signature, tempo] of composition
+	+ Generate some number of harmonies for the composition
+		
+Module 2: Chopin Melodies	
+- Create naïve Bayes classifier for Chopin melodies
+	+ Create frequency distribution of features for each composition in the Chopin corpus to use as attributes
+		• A feature is two measures long
+	+ Attributes: 
+		• Highest note
+		• Lowest note
+		• Starting note
+		• Ending note
+		• # of notes
+		• Ascending/descending
+		• Most numerous interval between notes
+		• Least numerous interval between notes
+- Create recombinant generative model of Chopin melodies that passes classifier
+	+ Take [duration, key signature, time signature, tempo] as input from previous module
+	+ Generate melodies that gets validated by the classifier
+
+Module 3: Integration
+- Combine the melody and harmony into final composition
