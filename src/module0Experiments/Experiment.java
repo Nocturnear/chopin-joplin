@@ -30,12 +30,12 @@ public class Experiment extends Frame implements JMC {
 		
 		Part[] arr = s.getPartArray();
 		for(int i = 0; i < arr.length; i++ ){
-			System.out.println("Part " + i + " has " + arr[i].getPhraseArray().length + " phrases.");
+			System.out.println("Part " + i + " has " + 
+					arr[i].getPhraseArray().length + " phrases.");
 			Phrase[] pArr = arr[i].getPhraseArray();
 			CPhrase chord = new CPhrase(pArr[0].getStartTime());
 			for(int j = 0; j < pArr.length; j++){
 				System.out.println("Phrase " + j);
-				//Write.midi(pArr[j], "Part" + i + "-Phrase" + j + ".mid");
 				chord.addPhrase(pArr[j]);
 				try {
 				    Thread.sleep(1000);
