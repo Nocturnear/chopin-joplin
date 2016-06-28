@@ -8,41 +8,23 @@ import jm.JMC;
 import jm.music.data.*;
 
 public final class Mod1Utils implements JMC {
-	class Harmony{
-		Part music;
-		Point timeSignature;
-		int keySignature;
-		double tempo;
-		double endTime;
-	}
-	class Measure {
-		ArrayList<Phrase> phrases;
-		int beatsPerMeasure;
-		int currBeats;
-		
-		Measure(){
-			phrases = new ArrayList<Phrase>();
-			beatsPerMeasure = 4;
-			currBeats = 0;
-		}
-		Measure(int beatsPerMeasure){
-			phrases = new ArrayList<Phrase>();
-			this.beatsPerMeasure = beatsPerMeasure;
-			currBeats = 0;
-		}
-		void addPhrase(Phrase phrase){
-			phrases.add(phrase);
-		}
-	
-	}
-	class HPattern{
-		String title;
-		Measure m1;
-		Measure m2;
+	static int THEME = 16;
+
+	static int compareLength(double n, double m){
+		double diff = n - m;
+		double epsilon = Math.min(n, m) * .1;
+		if(Math.abs(diff) <= epsilon)
+			return 0;
+		else
+			return (int)Math.signum(diff);
 	}
 	
-	static double getLength(Note n){
-		return Math.round(n.getRhythmValue()*10)/10.0;
+	static boolean equals(Note n, Note m){
+		if (n.getPitch() != m.getPitch())
+			return false;
+		if(compareLength(n.getRhythmValue(),m.getRhythmValue()) != 0)
+			return false;
+		return true;
 	}
 	static boolean equals(Phrase p, Phrase q) {
 		Note[] pn = p.getNoteArray();
@@ -50,21 +32,16 @@ public final class Mod1Utils implements JMC {
 		if (pn.length != qn.length)
 			return false;
 		for (int i = 0; i < pn.length; i++) {
-			if (!(pn[i].samePitch(qn[i])))
-				return false;
-			double pr = getLength(pn[i]);
-			double qr = getLength(qn[i]);
-			
-			if(pr != qr)
+			if(!(equals(pn[i], qn[i])))
 				return false;
 		}
 		return true;
 	}
 	static boolean equals(Measure m, Measure n) {
-		if (m.phrases.size() != n.phrases.size())
+		if (m.phrases.length != n.phrases.length)
 			return false;
-		for(int i = 0; i < m.phrases.size(); i++) {
-			if (!(equals(m.phrases.get(i), n.phrases.get(i))))
+		for(int i = 0; i < m.phrases.length; i++) {
+			if (!(equals(m.phrases[i], n.phrases[i])))
 				return false;
 		}
 		return true;
