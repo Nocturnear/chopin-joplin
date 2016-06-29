@@ -9,6 +9,7 @@ import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Score;
 import jm.util.Read;
+import jm.util.View;
 import jm.util.Write;
 
 public class Experiment extends Frame implements JMC {
@@ -43,7 +44,7 @@ public class Experiment extends Frame implements JMC {
 				    Thread.currentThread().interrupt();
 				}
 			}
-			Write.midi(chord, "Part " + i + ".mid");
+			View.show(chord.copy(0, 5));
 		}
 	}
 

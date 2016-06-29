@@ -1,6 +1,8 @@
 package module1Joplin;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import module1Joplin.Harmony;
 import module1Joplin.HPattern;
@@ -23,92 +25,68 @@ public class HarmonyGenerator implements JMC {
 	int analyzeMIDI(Score score){
 		
 		int numPatterns = 0;
-		
-		Measure[] measures = makeMeasures(score);
-		
-		test(measures);
-		
+		CPhrase[] measures = makeMeasures(score);
+		System.out.println("Output harmony:"); 
+		for(int i = 0; i < measures.length; i++){ 
+			System.out.println("Measure " + i);
+			Part p = new Part(); 
+			p.addCPhrase(measures[i]);
+			Play.midi(p);
+		}
 		return numPatterns;
 	}	
-	private Measure[] makeMeasures(Score score) {
+	private CPhrase[] makeMeasures(Score score) {
 		double duration = score.getEndTime();
 		int beatsPerMeasure = score.getNumerator();
 		double numMeasures = duration/beatsPerMeasure;
-		double beatsToSkip = duration % (Mod1Utils.THEME*beatsPerMeasure);
-		numMeasures -= beatsToSkip/beatsPerMeasure;
-		Part part = getHarmony(score);
-		if (part == null)
-			return null;
+		double beatOffset = duration % (Mod1Utils.THEME*beatsPerMeasure);
+		numMeasures -= beatOffset/beatsPerMeasure;
 		
-		//Play.midi(part);	//TODO
-		
-		Phrase[] phrases = part.getPhraseArray();
-		
-		Measure[] measures = new Measure[(int)numMeasures];
-		for(int i = 0; i < measures.length; i++) {
-			measures[i] = new Measure(beatsPerMeasure, phrases.length, i);
+		CPhrase harmony = getHarmonyPart(score);
+		CPhrase[] measures = new CPhrase[(int) numMeasures];
+		for(int m = 0; m < numMeasures; m++) {
+			double measureStart = beatOffset + (m*beatsPerMeasure);
+			double measureEnd = beatOffset + ((m+1)*beatsPerMeasure);
+			measures[m] = copySection(harmony, measureStart, measureEnd);
 		}
-		
-		return fillMeasures(beatsToSkip, measures, phrases);
+		return measures;
 	}
-	private Part getHarmony(Score score) {
+	/* A lot of this method was scavenged from the copy(double startLoc, double endLoc) method in the CPhrase class */
+	private CPhrase copySection(CPhrase phrase, double paramDouble1, double paramDouble2) {
+		Vector localVector = new Vector();
+	    CPhrase localCPhrase = new CPhrase(phrase.getTitle() + " copy", paramDouble1, phrase.getInstrument());
+	    Enumeration localEnumeration = phrase.getPhraseList().elements();
+	    while (localEnumeration.hasMoreElements())
+	    {
+	      Phrase localPhrase = ((Phrase)localEnumeration.nextElement()).copy(paramDouble1, paramDouble2);
+	      if(localPhrase == null)
+	    	  continue;
+	      localPhrase.setStartTime(paramDouble1);
+	      localVector.addElement(localPhrase);
+	    }
+	    localCPhrase.setPhraseList(localVector);
+	    localCPhrase.setAppend(phrase.getAppend());
+	    localCPhrase.setLinkedPhrase(phrase.getLinkedPhrase());
+	    return localCPhrase;
+	}
+	private CPhrase getHarmonyPart(Score score) {
 		Part[] partArr = score.getPartArray();
 		if(partArr.length < 1 || partArr[1].getPhraseArray().length == 0){
 			System.out.println(score.getTitle() + " is invalid");
 			return null;
 		}
-		
-		return partArr[1];
+		CPhrase harmony = new CPhrase(partArr[1].getPhrase(0).getStartTime());
+		for(Phrase phrase : partArr[1].getPhraseArray())
+			harmony.addPhrase(phrase);
+		return harmony;
 	}
-	private Measure[] fillMeasures(double beatsToSkip, Measure[] measures, Phrase[] phrases) {
-		int measCount = 0;
-		
-		for(int i = 0; i < phrases.length; i++){
-			double skipped = 0.0;
-			Note[] notes = phrases[i].getNoteArray();
-			for(int j = 0; j < notes.length; j++) {
-				double noteDur = notes[j].getRhythmValue();
-				//This if-block filters out "introduction" notes that should be skipped
-				if(phrases[i].getStartTime() < beatsToSkip && skipped < beatsToSkip)
-					if(Mod1Utils.compareLength(skipped + noteDur, beatsToSkip) < 0)
-						skipped += noteDur;
-					else
-						skipped = beatsToSkip;
-				//Add notes to measures
-				else{
-					int success = measures[measCount].addNote(notes[j], i);
-					if(success == 0){
-						measCount++;
-						j--;
-					}
-					else {
-						if(measures[measCount].isFull())
-							measCount++;
-					}
-				}
-			}
-		}
-		return measures;
-	}
+	
 	/* This function will generate a Harmony object, which contains the 
 	 * left hand musical data, by stringing together multiple HarmonyPatterns 
 	 * from the candidates list.
 	 */
 	Harmony generateHarmony(){
 		return null;
-	}
-	
-	//TODO
-	private void test(Measure[] meas){
-		/*Score s = new Score();
-		Part p = new Part();
-		for(Measure mea : meas){
-			p.addCPhrase(mea.makeCPhrase());
-		}
-		s.add(p);
-		
-		System.out.println("Output:");
-		Play.midi(s);*/
 	}
 	
 	public static void main(String[] args) {
