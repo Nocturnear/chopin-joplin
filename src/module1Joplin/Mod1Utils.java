@@ -37,11 +37,16 @@ public final class Mod1Utils implements JMC {
 		}
 		return true;
 	}
-	static boolean equals(Measure m, Measure n) {
-		if (m.phrases.length != n.phrases.length)
+	static boolean equals(CPhrase m, CPhrase n) {
+		Vector<Phrase> mVector = m.getPhraseList();
+		Phrase[] mPhrases = mVector.toArray(new Phrase[mVector.size()]);
+		Vector<Phrase> nVector = n.getPhraseList();
+		Phrase[] nPhrases = nVector.toArray(new Phrase[nVector.size()]);
+		
+		if (mPhrases.length != nPhrases.length)
 			return false;
-		for(int i = 0; i < m.phrases.length; i++) {
-			if (!(equals(m.phrases[i], n.phrases[i])))
+		for(int i = 0; i < mPhrases.length; i++) {
+			if (!(equals(mPhrases[i], nPhrases[i])))
 				return false;
 		}
 		return true;
