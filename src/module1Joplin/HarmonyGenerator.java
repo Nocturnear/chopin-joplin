@@ -3,8 +3,13 @@ package module1Joplin;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
 
 import module1Joplin.Harmony;
@@ -18,9 +23,11 @@ import jm.util.View;
 public class HarmonyGenerator implements JMC {
 
 	HashMap<String, ArrayList<HPattern>> candidates;
+	Set<Double> tempos;
 	
 	public HarmonyGenerator(){
 		candidates = new HashMap<String, ArrayList<HPattern>>();
+		tempos = new HashSet<Double>();
 	}
 	
 	/* This function takes in a music file as an input, scrapes the file for 
@@ -132,10 +139,13 @@ public class HarmonyGenerator implements JMC {
 			}
 			else
 				candidates.put(key, new ArrayList<HPattern>());
+			
 		}
 		
-		for(HPattern pattern : patterns)
+		for(HPattern pattern : patterns) {
 			candidates.get(pattern.title).add(pattern);
+			tempos.add(pattern.tempo);
+		}
 		
 		return patterns.size();
 	}
@@ -145,9 +155,38 @@ public class HarmonyGenerator implements JMC {
 	 * from the candidates list.
 	 */
 	Harmony generateHarmony(){
-		return null;
+		Random rand = new Random();
+		Part music = new Part();
+		
+		int dominantKey = rand.nextInt(12) - 4;
+		int subdominantKey = (dominantKey != -4) ? dominantKey - 1 : 7;
+		
+		double tempo = new ArrayList<Double>(tempos).get(rand.nextInt(tempos.size()));
+		
+		int numThemes = rand.nextInt(2) + 3;
+		ArrayList<String> candidateKeys = new ArrayList<String>(candidates.keySet());
+		for(int i = 0; i < numThemes; i++) {
+			int key = (i % 2 == 0) ? dominantKey : subdominantKey;
+			
+			for(int j = 0; j < Mod1Utils.THEME; j++) {
+				String randKey = candidateKeys.get(rand.nextInt(candidateKeys.size()));
+				ArrayList<HPattern> randPool = candidates.get(randKey);
+				HPattern randPattern = randPool.get(rand.nextInt(randPool.size()));
+				randPattern.changeTempo(tempo/randPattern.tempo);
+				randPattern.changeKey(key);
+				addToPart(music, randPattern);
+			}
+			
+		}
+		
+		return new Harmony(music, dominantKey, tempo);
+	}
+	private Part addToPart(Part music, HPattern pattern) {
+		//TODO: Add CPhrases to the Part, ensuring that they are appended to each other properly.
+		return music;
 	}
 	
+	/*
 	private Score getScore(){
 		FileDialog fd;
 		Frame f = new Frame();
@@ -165,6 +204,7 @@ public class HarmonyGenerator implements JMC {
 		
 		return s;
 	}
+	*/
 	private void printCandidates(){
 		for (String key : candidates.keySet()) {
 			System.out.println("\"" + key + "\"");

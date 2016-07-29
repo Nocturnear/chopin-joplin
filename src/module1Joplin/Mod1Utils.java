@@ -10,9 +10,10 @@ import jm.JMC;
 import jm.music.data.*;
 
 public final class Mod1Utils implements JMC {
-	static int THEME = 16;
+	public static int THEME = 16;
+	public static int PIECE_LENGTH = 144;
 
-	static class NoteComp{
+	private static class NoteComp{
 		int pitch;
 		double offset;
 		
@@ -37,7 +38,7 @@ public final class Mod1Utils implements JMC {
 		}
 	}
 	
-	static int compareLength(double n, double m){
+	public static int compareLength(double n, double m){
 		double diff = n - m;
 		double epsilon = Math.min(n, m) * .1;
 		if(Math.abs(diff) <= epsilon)
@@ -46,14 +47,14 @@ public final class Mod1Utils implements JMC {
 			return (int)Math.signum(diff);
 	}
 	
-	static boolean equals(Note n, Note m){
+	public static boolean equals(Note n, Note m){
 		if (n.getPitch() != m.getPitch())
 			return false;
 		if(compareLength(n.getRhythmValue(),m.getRhythmValue()) != 0)
 			return false;
 		return true;
 	}
-	static boolean equals(Phrase p, Phrase q) {
+	public static boolean equals(Phrase p, Phrase q) {
 		Note[] pn = p.getNoteArray();
 		Note[] qn = q.getNoteArray();
 		if (pn.length != qn.length)
@@ -64,7 +65,7 @@ public final class Mod1Utils implements JMC {
 		}
 		return true;
 	}
-	static boolean equals(CPhrase m, CPhrase n) {
+	public static boolean equals(CPhrase m, CPhrase n) {
 		Vector<Phrase> mVector = m.getPhraseList();
 		Phrase[] mPhrases = mVector.toArray(new Phrase[mVector.size()]);
 		Vector<Phrase> nVector = n.getPhraseList();
@@ -105,7 +106,13 @@ public final class Mod1Utils implements JMC {
 		Collections.sort(allNotesN, new Comparator<NoteComp>() {
 			@Override
 			public int compare(NoteComp o1, NoteComp o2) {
-				return compareLength(o1.offset, o2.offset);
+				int offDiff = compareLength(o1.offset, o2.offset); 
+				if (offDiff == 0) {
+					return compareLength(o1.pitch, o2.pitch);
+				}
+				else {
+					return offDiff;
+				}
 			}
 		});
 		
@@ -116,14 +123,16 @@ public final class Mod1Utils implements JMC {
 		}
 		return true;
 	}	
-	static boolean equals(HPattern hp1, HPattern hp2) {
+	
+	
+	public static boolean equals(HPattern hp1, HPattern hp2) {
 		if (!(hp1.title.equals(hp2.title)))
 			return false;
 		if (hp1.id != hp2.id)
 			return false;
 		return contentEquals(hp1, hp2);
 	}
-	static boolean contentEquals(HPattern hp1, HPattern hp2) {
+	public static boolean contentEquals(HPattern hp1, HPattern hp2) {
 		if (compareLength(hp1.tempo, hp2.tempo) != 0)
 			return false;
 		if (hp1.keySig != hp2.keySig)

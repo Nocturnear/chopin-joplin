@@ -1,14 +1,13 @@
 Module 1: Joplin Harmonies
 - Create recombinant generative model for Joplin harmonies
-	+ Include logic to recognize beginning/end patterns to bookend harmonies
+	+ Include logic to recognize beginning patterns to facilitate grouping piece into measures
 	+ Recognize harmony pattern candidates by looking for repetitions in pieces
-	+ Decide on [duration, key signature, time signature, tempo] of composition
+	+ Decide on [key signature, tempo] of composition
 	
 	+ Generate some number of harmonies for the composition
-		- Can use Mod.cycle(phrase, #beats) to repeat patterns
-		- Can use Mod.elongate(score, scaleFactor) to decrease tempo of patterns
+		- Can use Mod.repeat(phrase, n # of times) to repeat patterns
+		- Can use Mod.elongate(score, scaleFactor) to increase/decrease tempo of patterns
 			o Don't forget to score.setTempo(score.getTempo()*scaleFactor) afterwards
-		- Cannot increase tempo of patterns
 		- Can use Mod.transpose(score, #semitones) to change key signature of patterns
 		- Cannot change time signature of patterns
 		

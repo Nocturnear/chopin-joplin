@@ -1,6 +1,7 @@
 package module1Joplin;
 
 import jm.music.data.CPhrase;
+import jm.music.tools.Mod;
 
 public class HPattern{
 	String title;
@@ -23,7 +24,15 @@ public class HPattern{
 		this.m2 = m2;
 	}
 	
+	public void changeTempo(double scaleFactor) {
+		Mod.elongate(m1, scaleFactor);
+		Mod.elongate(m2, scaleFactor);
+		tempo *= scaleFactor;
+	}
 	
-	
-	
+	public void changeKey(int newKey) {
+		Mod.transpose(m1, newKey-keySig);
+		Mod.transpose(m2, newKey-keySig);
+		keySig = newKey;
+	}
 }
