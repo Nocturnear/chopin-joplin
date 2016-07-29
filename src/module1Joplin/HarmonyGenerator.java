@@ -4,27 +4,32 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Vector;
 
 import module1Joplin.Harmony;
 import module1Joplin.HPattern;
 import jm.JMC;
 import jm.music.data.*;
-import jm.music.tools.Mod;
 import jm.util.Play;
 import jm.util.Read;
 import jm.util.View;
 
 public class HarmonyGenerator implements JMC {
 
-	static ArrayList<HPattern> candidates;
+	HashMap<String, ArrayList<HPattern>> candidates;
+	
+	public HarmonyGenerator(){
+		candidates = new HashMap<String, ArrayList<HPattern>>();
+	}
 	
 	/* This function takes in a music file as an input, scrapes the file for 
 	 * 2-measure HarmonyPatterns, and adds them to the list of candidates.
 	 */
-	int analyzeMIDI(Score score){
+ 	int analyzeMIDI(Score score){
 		CPhrase[] measures = makeMeasures(score);
 		ArrayList<HPattern> patterns = convertMeasures(score, measures);
+		patterns = findRepeats(patterns);
 		return addNewPatterns(patterns);
 	}	
 	
@@ -56,6 +61,12 @@ public class HarmonyGenerator implements JMC {
 	      if(localPhrase == null)
 	    	  continue;
 	      localPhrase.setStartTime(paramDouble1);
+	      for(int n = 0; n < localPhrase.getNoteArray().length; n++) {
+	    	  if (Mod1Utils.compareLength(localPhrase.getNoteArray()[n].getRhythmValue(), 0.05) < 0) {
+	    		  localPhrase.removeNote(n);
+	    		  n--;
+	    	  }
+	      }
 	      localVector.addElement(localPhrase);
 	    }
 	    localCPhrase.setPhraseList(localVector);
@@ -78,15 +89,57 @@ public class HarmonyGenerator implements JMC {
 	private ArrayList<HPattern> convertMeasures(Score score, CPhrase[] measures) {
 		ArrayList<HPattern> patterns = new ArrayList<HPattern>();
 		for(int i = 0; i < measures.length; i += 2)
-			patterns.add(new HPattern(score.getTitle(), score.getTempo(), i/2, score.getKeySignature(), score.getNumerator(), measures[i], measures[i+1]));
+			patterns.add(new HPattern(score.getTitle(), score.getTempo(), i/2, score.getKeySignature(), 
+					score.getNumerator(), measures[i], measures[i+1]));
 		return patterns;
 	}
 	
-	private int addNewPatterns(ArrayList<HPattern> patterns) {
+	private ArrayList<HPattern> findRepeats(ArrayList<HPattern> patterns) {
+		ArrayList<HPattern> repeats = new ArrayList<HPattern>();
+		for(int p = 0; p < patterns.size(); p++) {
+			HPattern curr = patterns.get(p);
+			int rCount = 0;
+			
+			for(int r = p; r < patterns.size(); r++) {
+				if( p != r) {
+					if (Mod1Utils.contentEquals(curr, patterns.get(r))) {
+						patterns.remove(r);
+						r--;
+						rCount++;
+					}
+				}
+			}
+			
+			if (rCount > 0) {
+				repeats.add(curr);
+			}
+		}
 		
-		return 0;
+		return repeats;
 	}
 	
+	private int addNewPatterns(ArrayList<HPattern> patterns) {
+		for(int p = 0; p < patterns.size(); p++) {
+			String key = patterns.get(p).title;
+			if(candidates.containsKey(key)) {
+				for(HPattern candidate : candidates.get(key)) {
+					if (Mod1Utils.equals(candidate, patterns.get(p))) {
+						patterns.remove(p);
+						p--;
+						break;
+					}
+				}
+			}
+			else
+				candidates.put(key, new ArrayList<HPattern>());
+		}
+		
+		for(HPattern pattern : patterns)
+			candidates.get(pattern.title).add(pattern);
+		
+		return patterns.size();
+	}
+
 	/* This function will generate a Harmony object, which contains the 
 	 * left hand musical data, by stringing together multiple HarmonyPatterns 
 	 * from the candidates list.
@@ -112,16 +165,27 @@ public class HarmonyGenerator implements JMC {
 		
 		return s;
 	}
-
+	private void printCandidates(){
+		for (String key : candidates.keySet()) {
+			System.out.println("\"" + key + "\"");
+			for (HPattern patt : candidates.get(key)) {
+				System.out.println("\t" + patt.id);
+			}
+		}
+	}
 	public static void main(String[] args) {
 		HarmonyGenerator hg = new HarmonyGenerator();
-		//Score s = getScore();
 		Score score = new Score("MapleLeafRag");
 		Read.midi(score, "lib/joplin/MapleLeafRag.mid");
-		
-		if (hg.analyzeMIDI(score) <= 0){
+		int newPatterns = hg.analyzeMIDI(score); 
+		if  (newPatterns <= 0){
 			System.out.print("No new patterns added.");
 		}
+		else{
+			System.out.printf("There are %d new patterns added.\n", newPatterns);
+			hg.printCandidates();
+		}
+		
 	}
 }
 

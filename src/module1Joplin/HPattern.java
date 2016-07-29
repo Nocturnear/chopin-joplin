@@ -11,7 +11,9 @@ public class HPattern{
 	CPhrase m1;
 	CPhrase m2;
 	
-	public HPattern(String title, double tempo, int id, int keySig,	int beatsPerMeasure, CPhrase m1, CPhrase m2) {
+	public HPattern(String title, double tempo, int id,
+			int keySig,	int beatsPerMeasure, 
+			CPhrase m1, CPhrase m2) {
 		this.title = title;
 		this.tempo = tempo;
 		this.id = id;
