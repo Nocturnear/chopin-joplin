@@ -24,15 +24,23 @@ public class HPattern{
 		this.m2 = m2;
 	}
 	
-	public void changeTempo(double scaleFactor) {
-		Mod.elongate(m1, scaleFactor);
-		Mod.elongate(m2, scaleFactor);
-		tempo *= scaleFactor;
+	public HPattern(HPattern copy) {
+		this.title = copy.title;
+		this.tempo = copy.tempo;
+		this.id = copy.id;
+		this.keySig = copy.keySig;
+		this.beatsPerMeasure = copy.beatsPerMeasure;
+		this.m1 = copy.m1.copy();
+		this.m2 = copy.m2.copy();
 	}
 	
 	public void changeKey(int newKey) {
 		Mod.transpose(m1, newKey-keySig);
 		Mod.transpose(m2, newKey-keySig);
 		keySig = newKey;
+	}
+	
+	public String toString() {
+		return m1.toString() + "\n" + m2.toString() + "\n-\n";
 	}
 }

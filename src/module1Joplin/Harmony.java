@@ -1,6 +1,6 @@
 package module1Joplin;
 
-import java.awt.Point;
+import java.util.ArrayList;
 
 import jm.music.data.Part;
 
@@ -8,35 +8,15 @@ public class Harmony{
 	Part music;
 	int keySignature;
 	double tempo;
+	ArrayList<Integer> ids;
 	
-	public Harmony(Part music, int keySignature, double tempo) {
+	public Harmony(Part music, int keySignature, double tempo,
+			ArrayList<Integer> ids) {
 		this.music = music;
 		this.keySignature = keySignature;
 		this.tempo = tempo;
+		this.ids = ids;
 	}
-
-	public Part getMusic() {
-		return music;
-	}
-
-	public void setMusic(Part music) {
-		this.music = music;
-	}
-
-	public int getKeySignature() {
-		return keySignature;
-	}
-
-	public void setKeySignature(int keySignature) {
-		this.keySignature = keySignature;
-	}
-
-	public double getTempo() {
-		return tempo;
-	}
-
-	public void setTempo(double tempo) {
-		this.tempo = tempo;
-	}
+	
 	
 }

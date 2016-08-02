@@ -10,7 +10,7 @@ import jm.JMC;
 import jm.music.data.*;
 
 public final class Mod1Utils implements JMC {
-	public static int THEME = 16;
+	public static int THEME = 8;
 	public static int PIECE_LENGTH = 144;
 
 	private static class NoteComp{
