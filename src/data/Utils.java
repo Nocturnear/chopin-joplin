@@ -1,6 +1,5 @@
-package module1Joplin;
+package data;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,9 +8,11 @@ import java.util.Vector;
 import jm.JMC;
 import jm.music.data.*;
 
-public final class Mod1Utils implements JMC {
+public final class Utils implements JMC {
 	public static int THEME = 8;
+	public static int THEME_LENGTH = 32;
 	public static int PIECE_LENGTH = 144;
+	public static int GRAM_LENGTH = 6;
 
 	private static class NoteComp{
 		int pitch;
@@ -124,22 +125,21 @@ public final class Mod1Utils implements JMC {
 		return true;
 	}	
 	
-	
 	public static boolean equals(HPattern hp1, HPattern hp2) {
-		if (!(hp1.title.equals(hp2.title)))
+		if (!(hp1.getTitle().equals(hp2.getTitle())))
 			return false;
-		if (hp1.id != hp2.id)
+		if (hp1.getId() != hp2.getId())
 			return false;
 		return contentEquals(hp1, hp2);
 	}
 	public static boolean contentEquals(HPattern hp1, HPattern hp2) {
-		if (compareLength(hp1.tempo, hp2.tempo) != 0)
+		if (compareLength(hp1.getTempo(), hp2.getTempo()) != 0)
 			return false;
-		if (hp1.keySig != hp2.keySig)
+		if (hp1.getKeySig() != hp2.getKeySig())
 			return false;
-		if (hp1.beatsPerMeasure != hp2.beatsPerMeasure)
+		if (hp1.getBeatsPerMeasure() != hp2.getBeatsPerMeasure())
 			return false;
-		return (equals(hp1.m1, hp2.m1) && equals(hp1.m2, hp2.m2));
+		return (equals(hp1.getM1(), hp2.getM1()) && equals(hp1.getM2(), hp2.getM2()));
 	}
 
 }

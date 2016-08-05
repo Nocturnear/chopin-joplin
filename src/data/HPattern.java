@@ -1,16 +1,16 @@
-package module1Joplin;
+package data;
 
 import jm.music.data.CPhrase;
 import jm.music.tools.Mod;
 
 public class HPattern{
-	String title;
-	double tempo;
-	int id;
-	int keySig;
-	int beatsPerMeasure;
-	CPhrase m1;
-	CPhrase m2;
+	private String title;
+	private double tempo;
+	private int id;
+	private int keySig;
+	private int beatsPerMeasure;
+	private CPhrase m1;
+	private CPhrase m2;
 	
 	public HPattern(String title, double tempo, int id,
 			int keySig,	int beatsPerMeasure, 
@@ -43,4 +43,33 @@ public class HPattern{
 	public String toString() {
 		return m1.toString() + "\n" + m2.toString() + "\n-\n";
 	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public double getTempo() {
+		return tempo;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int getKeySig() {
+		return keySig;
+	}
+
+	public int getBeatsPerMeasure() {
+		return beatsPerMeasure;
+	}
+
+	public CPhrase getM1() {
+		return m1;
+	}
+
+	public CPhrase getM2() {
+		return m2;
+	}
+	
 }

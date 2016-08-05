@@ -1,32 +1,23 @@
+To try it out, run the main method in the CJComposer class, which can be found in the driver package.
+This will generate a MIDI file called chopin-joplin.mid in "lib/generated/".
+To see samples made with different degree n-grams, check out [3/4/5/6]Grams.mid, which are also in "lib/generated/".
+
 Module 1: Joplin Harmonies
 - Create recombinant generative model for Joplin harmonies
 	+ Include logic to recognize beginning patterns to facilitate grouping piece into measures
 	+ Recognize harmony pattern candidates by looking for repetitions in pieces
-	+ Decide on [key signature, tempo] of composition
+	+ Decide on key signature, tempo, number of movements, dominant key, and subdominant key of composition
 	
-	+ Generate some number of harmonies for the composition
-		- Can use Mod.repeat(phrase, n # of times) to repeat patterns
-		- Can use Mod.elongate(score, scaleFactor) to increase/decrease tempo of patterns
-			o Don't forget to score.setTempo(score.getTempo()*scaleFactor) afterwards
-		- Can use Mod.transpose(score, #semitones) to change key signature of patterns
-		- Cannot change time signature of patterns
+	+ Generate harmonies for the composition
+	+ Have a dominant theme that is in the dominant key signature and repeats throughout the piece
+	+ The other themes are in the subdominant key and are unique
 		
 Module 2: Chopin Melodies	
-- Create naive Bayes classifier for Chopin melodies
-	+ Create frequency distribution of features for each composition in the Chopin corpus to use as attributes
-		- A feature is two measures long
-	+ Attributes: 
-		- Highest note
-		- Lowest note
-		- Starting note
-		- Ending note
-		- # of notes
-		- Ascending/descending
-		- Most numerous interval between notes
-		- Least numerous interval between notes
-- Create recombinant generative model of Chopin melodies that passes classifier
-	+ Take [duration, key signature, time signature, tempo] as input from previous module
-	+ Generate melodies that gets validated by the classifier
+- Create n-gram based generative model for melodies
+	+ Scrape the Chopin piece for all of the n-grams (The degree of the n-gram can be changed using Utils.GRAM_LENGTH)
+	+ Construct a tree structure for all of the n-grams
+	+ Generate melodies using the n-grams
+		- Ensure a similar structure of dominant and subdominant themes, as with the harmony
 
 Module 3: Integration
 - Combine the melody and harmony into final composition
