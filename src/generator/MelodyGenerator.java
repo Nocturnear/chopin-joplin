@@ -108,7 +108,7 @@ public class MelodyGenerator implements JMC {
 		Read.midi(score, "lib/chopin/chpn_op66.mid");
 		score.setPan((PAN_CENTER + PAN_RIGHT)/2);
 		
-		score.setTempo(genHarmony.getTempo());
+		Mod.elongate(score, genHarmony.getTempo()/score.getTempo());
 		
 		domKeyDiff = genHarmony.getDomKey() - score.getKeySignature();
 		subDomKeyDiff = genHarmony.getSubDomKey() - score.getKeySignature();
